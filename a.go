@@ -17,24 +17,37 @@ func main() {
               p[i] = 1 - p[i]
     }               
 
-    dp := make([]float32, T + 1)
-    pr := make([]int, T + 1)
+    dp := make([][]float32, n + 1)
+    pr := make([][]int, n + 1)
 
-    for i := 0; i <= T; i++ {
-        dp[i] = 1
-        pr[i] = -2
+    for i := 0; i <= n; i++ {
+        dp[i] = make([]float32, T + 1)
+        pr[i] = make([]int, T + 1)
     }
-    pr[0] = -1        
+         
+    for i := 0; i <= n; i++ {
+        for j := 0; j <= T; j++ {
+            dp[i][j] = 1.0
+            pr[i][j] = -2 
+        }
+    }
+    pr[0][0] = -1    
 
     for item := 0; item < n; item++ {
         for i := T; i - t[item] >= 0; i-- {
             j := i - t[item]
-            if pr[j] != -2 {
-                if dp[j] * p[item] < dp[i] {
-                   dp[i] = dp[j] * p[item]
-                    pr[i] = item
+            if pr[item][j] != -2 {
+                if dp[item][j] * p[item] < dp[item + 1][i] {
+                   dp[item + 1][i] = dp[item][j] * p[item]
+                   pr[item + 1][i] = item
                 }  
            }                         
+        }
+        for i := T; i >= 0; i-- {
+            if dp[item][i] < dp[item + 1][i] {
+                dp[item + 1][i] = dp[item][i]
+                pr[item + 1][i] = -1        
+            }
         }
     }
 
@@ -44,19 +57,22 @@ func main() {
     pos = 0
 
     for i := 0; i <= T; i++ {
-        if best > dp[i] {
-            best = dp[i]
+        if best > dp[n][i] {
+            best = dp[n][i]
             pos = i
         }                       
     }
 
     answer := make([]int, 0, n)
-    for ;pos > 0; pos = pos - t[pr[pos]] {
-        answer = append(answer, pr[pos])
+    for i := n; i > 0; i-- {
+        if pr[i][pos] != -1 {
+            answer = append(answer, pr[i][pos])
+            pos -= t[pr[i][pos]]
+        }
     }
 
     fmt.Printf("%d\n", len(answer));
     for i := 0; i < len(answer); i++ {
         fmt.Printf("%d ", answer[i] + 1)
     }
-}
+}                      
