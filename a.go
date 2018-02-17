@@ -34,22 +34,24 @@ func main() {
     pr[0][0] = -1    
 
     for item := 0; item < n; item++ {
-        for i := T; i - t[item] >= 0; i-- {
-            j := i - t[item]
-            if pr[item][j] != -2 {
-                if dp[item][j] * p[item] < dp[item + 1][i] {
+        for j := 0; j + t[item] <= T; j++ {
+            i := j + t[item]
+            if pr[item][j] != -2 {            
+                if dp[item + 1][i] >= dp[item][j] * p[item] {
                    dp[item + 1][i] = dp[item][j] * p[item]
                    pr[item + 1][i] = item
                 }  
            }                         
         }
         for i := T; i >= 0; i-- {
-            if dp[item][i] < dp[item + 1][i] {
-                dp[item + 1][i] = dp[item][i]
-                pr[item + 1][i] = -1        
+            if pr[item][i] != -2 {
+                if dp[item + 1][i] >= dp[item][i] {
+                   dp[item + 1][i] = dp[item][i]
+                   pr[item + 1][i] = -1        
+                }
             }
         }
-    }
+    }                                         
 
     var best float32
     var pos int
@@ -70,7 +72,7 @@ func main() {
             pos -= t[pr[i][pos]]
         }
     }
-
+                                                
     fmt.Printf("%d\n", len(answer));
     for i := 0; i < len(answer); i++ {
         fmt.Printf("%d ", answer[i] + 1)
