@@ -72,7 +72,7 @@ func main() {
             pos -= t[pr[i][pos]]
         }
     }
-                                                
+    fmt.Printf("%f\n", 1 - best);                                            
     fmt.Printf("%d\n", len(answer));
     for i := 0; i < len(answer); i++ {
         fmt.Printf("%d ", answer[i] + 1)
